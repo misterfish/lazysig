@@ -24,6 +24,7 @@ import {
     laat, laatDat, laatStar, gt, eq, applyScalar, assocMut,
     laatStarDat, blush,
     ifEmpty, range, rangeBy,
+    mergeFromMut,
 } from 'stick'
 
 import express from 'express'
@@ -64,16 +65,24 @@ const wsProxy = proxy ('ws://127.0.0.1:9160', {
         console.log ('error, err', err)
     },
     onProxyReq: (proxyReq, req, res) => {
+
+        proxyReq.setHeader ('connection', 'Upgrade')
+        proxyReq.setHeader ('upgrade', 'websocket')
+
         console.log ('proxy req NORMAL')
 //         console.log ('proxyReq', proxyReq)
         console.log ('NORMAL proxyReq.headers', proxyReq.headers)
         console.log ('NORMAL req.headers', req.headers)
 //         console.log ('res.headers', res.headers)
     },
-    onProxyReqWs: (proxyReq, req, res) => {
+    onProxyReqWs: (proxyReq, req, socket, options, head) => {
+        proxyReq.setHeader ('connection', 'Upgrade')
+        proxyReq.setHeader ('upgrade', 'websocket')
+
         console.log ('proxy req WS')
         console.log ('WS proxyReq.headers', proxyReq.headers)
         console.log ('WS req.headers', req.headers)
+        console.log ('WS head', head.toString ())
     },
     onProxyRes: (proxyRes, req, res) => {
         console.log ('proxyRes.headers', proxyRes.headers)
