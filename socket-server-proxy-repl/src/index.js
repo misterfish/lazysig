@@ -66,8 +66,13 @@ const wsProxy = proxy ('ws://127.0.0.1:9160', {
     },
     onProxyReq: (proxyReq, req, res) => {
 
+        console.log ('proxyReq.getHeader ("connection")', proxyReq.getHeader ("connection"))
+        proxyReq.removeHeader ('connection')
+        console.log ('proxyReq.getHeader ("connection")', proxyReq.getHeader ("connection"))
+
         proxyReq.setHeader ('connection', 'Upgrade')
         proxyReq.setHeader ('upgrade', 'websocket')
+        console.log ('proxyReq.getHeader ("connection")', proxyReq.getHeader ("connection"))
 
         console.log ('proxy req NORMAL')
 //         console.log ('proxyReq', proxyReq)
