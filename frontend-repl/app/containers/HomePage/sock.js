@@ -14,24 +14,33 @@ import {
 } from 'ramda'
 
 import {
-  invoke, pass1,
+  invoke, pass1, sprintfN, dot1, ifTrue, tapDot2,
 } from 'stick'
 
+const env = process.env.NODE_ENV || 'development'
+
+const iwarn = (...args) => console.warn (...args)
+
 const config = {
-    url: 'ws://localhost:9160',
+  urls: {
+    local: 'ws://localhost:9191',
+    production: 'ws://lazysig.mister-fish.net/ws',
+  },
+  url() { return this.urls [env] || iwarn ("bad env", env) },
 }
 
-const on = curry ((ev, f, ws) => {
-  ws.addEventListener (ev, f)
-  return ws
-})
+const send = dot1 ('send')
+
+const on = curry ((ev, f, ws) => ws
+  | tapDot2 ('addEventListener') (ev, f)
+)
 
 export const init = ({ onInit, onRecv, onClose, }) => {
   const client = {
     ready: false,
   }
 
-  const ws = new WebSocket (config.url)
+  const ws = new WebSocket (config.url ())
   | on ('open', () => {
     client.ready = true
     onInit ()
@@ -45,13 +54,12 @@ export const init = ({ onInit, onRecv, onClose, }) => {
     onClose ()
   })
 
-  const send = (data) => {
-	if (!client.ready) return console.warn ('socket not ready, ignoring msg')
-	return ws.send (data)
-  }
+  const sendMsg = (data) => client.ready | ifTrue
+    (_ => ws | send (data))
+    (_ => console.warn ('socket not ready, ignoring msg'))
 
   return {
-    send,
+    send: sendMsg,
   }
 }
 
