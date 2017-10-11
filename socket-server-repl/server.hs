@@ -3,9 +3,12 @@ module Main where
 import Data.Char (isPunctuation, isSpace)
 import Data.Monoid (mappend)
 import Data.Text (Text, pack, unpack)
+import Text.Read (readMaybe)
 import Control.Exception (finally, catch, ErrorCall)
 import Control.Monad (forM_, forever, (<=<))
 import Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
+import System.Environment (getArgs, getProgName)
+import System.Exit (exitFailure, exitSuccess)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Network.WebSockets as WS
@@ -23,8 +26,13 @@ import Hsig
     , generate
     )
 
+import qualified System.Posix.Signals as SPS
+
 import Fish
     ( green
+    , blue
+    , cyan
+    , yellow
     , red
     )
 
@@ -34,12 +42,6 @@ data Client = Client { getId :: ClientId
                      }
 
 data ServerState = ServerState { getClients :: [Client] }
-
-ip :: String
-ip = "127.0.0.1"
-
-port :: Int
-port = 9160 :: Int
 
 newServerState :: ServerState
 newServerState = ServerState []
@@ -60,8 +62,25 @@ removeClient client state = r' (getId client) (getClients state) where
 
 main :: IO ()
 main = do
+    (host, port) <- processArgs =<< getArgs
     state <- newMVar newServerState
-    WS.runServer ip port $ application state
+
+    h <- yellow host
+    p <- (cyan . show) port
+    putStrLn $ printf "Listening on host %s port %s" h p
+
+    WS.runServer host port $ application state
+    putStrLn "Exiting."
+
+processArgs :: ([String]) -> IO (String, Int)
+processArgs = p' where
+    p' [] = return (defaultHost, defaultPort)
+    p' ["-h"] = usageMsg >>= info >> exitSuccess
+    p' [arg1] = return (defaultHost, m' arg1)
+    p' [arg1, host] = return (host, m' arg1)
+    p' _ = usageMsg >>= err >> return ("", 0)
+    m' arg1' = maybe error' id $ readMaybe arg1' where
+        error' = error $ "Not a number: " ++ arg1'
 
 -- | new connection.
 application :: MVar ServerState -> WS.ServerApp
@@ -101,8 +120,8 @@ talk client = forever $ do
 processMsg :: Text -> IO Text
 processMsg msg = do
     parsed <- parse msg
-    return $ either err pack parsed where
-        err = const noParseAnswer
+    return $ either err' pack parsed where
+        err' = const noParseAnswer
 
 parse :: Text -> IO (Either String String)
 
@@ -118,6 +137,34 @@ parse txt = do
 noParseAnswer :: Text
 noParseAnswer = "✘"
 
+usageMsg :: IO String
+usageMsg = do
+    return . printf usage =<< getProgName
+
+err :: String -> IO ()
+err str = do
+    -- annotation applies to right of arrow.
+    b <- return . printf "%s" =<< red bullet :: IO String
+    putStrLn $ printf "%s Error: %s" b str
+    exitFailure
+
+info :: String -> IO ()
+info str = do
+    b <- return . printf "%s" =<< blue bullet :: IO String
+    putStrLn $ printf "%s %s" b str
+    exitFailure
+
+usage :: String
+usage = "Usage: %s port [host]"
+
+bullet :: String
+bullet = "𝄢"
+
+defaultHost :: String
+defaultHost = "127.0.0.1"
+
+defaultPort :: Int
+defaultPort = 9160 :: Int
 
 (+++) :: Text -> Text -> Text
 (+++) = T.append

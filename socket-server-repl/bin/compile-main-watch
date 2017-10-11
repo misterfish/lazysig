@@ -2,29 +2,16 @@
 
 set -e
 
-bindir=$(realpath --relative-to . "$(dirname "$0")")
+bindir=$(dirname "$0")
 
 . "$bindir"/functions.bash
 
 USAGE="Usage: $0"
 
-main_hs=("server.hs" "client.hs")
-opts='-ihsig/'
-
 chd "$bindir"/..
 
 makeit() {
     cmd "$bindir"/build
-    local src
-    local idx
-    local rc=0
-    for idx in ${!main_hs[@]}; do
-        src=${main_hs[$idx]}
-        if ! cmd ghc "$opts" "$src"; then
-            rc=1
-        fi
-    done
-    return $rc
 }
 
 check_dirty() {
