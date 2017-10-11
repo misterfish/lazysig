@@ -1,0 +1,9 @@
+#!/bin/bash
+
+bindir=$(realpath --relative-to . "$(dirname "$0")")
+
+. "$bindir"/functions.bash
+
+USAGE="Usage: $0"
+
+cmd cabal install websockets

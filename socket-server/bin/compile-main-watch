@@ -1,0 +1,77 @@
+#!/bin/bash
+
+set -e
+
+bindir=$(realpath --relative-to . "$(dirname "$0")")
+
+. "$bindir"/functions.bash
+
+USAGE="Usage: $0"
+
+main_hs=("server.hs" "client.hs")
+opts='-ihsig/'
+
+chd "$bindir"/..
+
+makeit() {
+    local src
+    local idx
+    local rc=0
+    for idx in ${!main_hs[@]}; do
+        src=${main_hs[$idx]}
+        if ! cmd ghc "$opts" "$src"; then
+            rc=1
+        fi
+    done
+    return $rc
+}
+
+check_dirty() {
+    ret=$1
+
+    local file_hs
+    local file_o
+    local mtime_hs
+    local mtime_o
+    local is_later
+    local is_dirty
+    for file_hs in *.hs; do
+        file_o=$(perl -npe 's/hs$/o/ or die' <<< "$file_hs")
+        if [ ! -e "$file_o" ]; then
+            is_dirty=yes
+            continue
+        fi
+        mtime_hs=$(chomp "$(mtime "$file_hs")")
+        mtime_o=$(chomp "$(mtime "$file_o")")
+        is_later=$(perl -ne '($a, $b) = split; print $a > $b' <<< "$mtime_hs $mtime_o")
+        if [ $is_later ]; then
+            is_dirty=yes
+            break
+        fi
+    done
+    if [ "$is_dirty" = yes ]; then
+        read $ret <<< yes
+    else
+        read $ret <<< no
+    fi
+}
+
+_beep() {
+    info "ok"
+    beep || true
+}
+
+loop() {
+    check_dirty ret1
+
+    if [ "$ret1" = yes ]; then
+        makeit && _beep || true
+    fi
+}
+
+while true; do
+    loop
+    sleep 1
+done
+
+# chd "$bindir"

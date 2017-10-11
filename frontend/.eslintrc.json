@@ -1,0 +1,34 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jest": true,
+        "jasmine": true
+    },
+    "globals": {
+        "__dirname": true,
+        "process": true,
+        "defineBinaryOperator": true
+    },
+    "extends": [ "eslint:recommended" ],
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "ecmaFeatures": {
+            "impliedStrict": true,
+            "experimentalObjectRestSpread": true,
+            "jsx": true,
+            "modules": true
+        },
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-unused-vars":["warn"],
+        "linebreak-style": [
+            "warn",
+            "unix"
+        ],
+        "no-console": 0,
+        "no-extra-semi": 0
+    }
+}
