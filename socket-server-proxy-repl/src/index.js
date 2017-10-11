@@ -64,7 +64,10 @@ const wsProxy = proxy ('ws://127.0.0.1:9160', {
         console.log ('error, err', err)
     },
     onProxyReq: (proxyReq, req, res) => {
+        console.log ('proxyReq', proxyReq)
         console.log ('proxyReq.headers', proxyReq.headers)
+        console.log ('req.headers', req.headers)
+        console.log ('res.headers', res.headers)
     },
     onProxyRes: (proxyRes, req, res) => {
         console.log ('proxyRes.headers', proxyRes.headers)
