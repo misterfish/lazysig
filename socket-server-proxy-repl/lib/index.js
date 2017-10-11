@@ -72,12 +72,14 @@ var wsProxy = (0, _httpProxyMiddleware2.default)('ws://127.0.0.1:9160', {
     onProxyReq: function onProxyReq(proxyReq, req, res) {
         console.log('proxy req NORMAL');
         //         console.log ('proxyReq', proxyReq)
-        //         console.log ('proxyReq.headers', proxyReq.headers)
-        //         console.log ('req.headers', req.headers)
+        console.log('NORMAL proxyReq.headers', proxyReq.headers);
+        console.log('NORMAL req.headers', req.headers);
         //         console.log ('res.headers', res.headers)
     },
     onProxyReqWs: function onProxyReqWs(proxyReq, req, res) {
         console.log('proxy req WS');
+        console.log('WS proxyReq.headers', proxyReq.headers);
+        console.log('WS req.headers', req.headers);
     },
     onProxyRes: function onProxyRes(proxyRes, req, res) {
         console.log('proxyRes.headers', proxyRes.headers);
