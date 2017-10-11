@@ -7,3 +7,6 @@ socket-server/server
 .fish-tree-files
 
 node_modules
+
+*.o
+*.hi

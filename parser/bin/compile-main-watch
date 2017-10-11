@@ -8,12 +8,12 @@ bindir=$(realpath --relative-to . "$(dirname "$0")")
 
 USAGE="Usage: $0"
 
-main_hs=Main.hs
+makecmd="$bindir"/build
 
 chd "$bindir"/..
 
 makeit() {
-    cmd ghc "$main_hs"
+    cmd "$makecmd"
 }
 
 check_dirty() {
