@@ -14,5 +14,8 @@
     "prelude-ls": "^1.1.2",
     "ramda": "^0.24.1",
     "stick": "https://github.com/misterfish/stick.git"
+  },
+  "devDependencies": {
+    "wscat": "^2.0.1"
   }
 }

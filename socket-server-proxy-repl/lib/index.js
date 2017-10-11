@@ -62,7 +62,21 @@ var use = (0, _stick.dot1)('use');
 var on = (0, _stick.dot2)('on');
 var listen = (0, _stick.dot1)('listen');
 
-var wsProxy = (0, _httpProxyMiddleware2.default)('ws://127.0.0.1:9160', { changeOrigin: true });
+var wsProxy = (0, _httpProxyMiddleware2.default)('ws://127.0.0.1:9160', {
+    changeOrigin: true,
+    logLevel: 'debug',
+
+    onError: function onError(err, req, res) {
+        console.log('error, err', err);
+    },
+    onProxyReq: function onProxyReq(proxyReq, req, res) {
+        console.log('proxyReq.headers', proxyReq.headers);
+    },
+    onProxyRes: function onProxyRes(proxyRes, req, res) {
+        console.log('proxyRes.headers', proxyRes.headers);
+    }
+});
+
 var upgrade = wsProxy.upgrade;
 
 

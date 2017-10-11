@@ -56,7 +56,21 @@ const use = dot1 ('use')
 const on = dot2 ('on')
 const listen = dot1 ('listen')
 
-const wsProxy = proxy('ws://127.0.0.1:9160', {changeOrigin:true});
+const wsProxy = proxy ('ws://127.0.0.1:9160', {
+    changeOrigin: true,
+    logLevel: 'debug',
+
+    onError: (err, req, res) => {
+        console.log ('error, err', err)
+    },
+    onProxyReq: (proxyReq, req, res) => {
+        console.log ('proxyReq.headers', proxyReq.headers)
+    },
+    onProxyRes: (proxyRes, req, res) => {
+        console.log ('proxyRes.headers', proxyRes.headers)
+    },
+})
+
 const { upgrade } = wsProxy
 
 port
@@ -68,4 +82,3 @@ const app = express ()
 | use (wsProxy)
 | listen (port)
 | on ('upgrade') (upgrade)
-
