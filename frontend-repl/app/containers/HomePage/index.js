@@ -88,6 +88,7 @@ const Item = ({ children, onClick, }) => <div
 const TooltipS = styled.div`
   background: yellow;
   position: absolute;
+  padding: 7px;
   top: 0px;
   right: ${prop ('idx') >> Number >> ifPredicate (-1 | gt) (multiply (10) >> String >> concatFrom ('%')) ('-12%' | blush)};
   opacity: ${prop ('idx') >> Number >> ifPredicate (-1 | gt) (1 | blush) (0 | blush)};
@@ -96,7 +97,10 @@ const TooltipS = styled.div`
 
 const ItemS = styled.div`
   font-family: 'Roboto Mono', monospace;
-  padding-left: 20px;
+//   padding-left: 20px;
+  padding: 10px;
+  background: black;
+  color: darkkhaki;
   &:hover {
     text-decoration: underline;
     cursor: pointer;
@@ -206,9 +210,9 @@ const convertLinks = xReplace (/ \[\[ (.+?) \| (.+?) \]\] /g)
 ((_, text, href) => [text, href] | sprintfN ('<a href=\'%s\'>%s</a>'))
 
 const Desc = ({ contents = [], onScroll, showTooltip = false, onClickItem, }) => {
-  let tooltipIdx = -1
+  let tooltipIdx = -2 // --- skip first item.
   const tooltips = [
-    'type this', 'or this', 'or this', 'etc.',
+    'or this', 'or this', 'or this', 'etc.',
   ]
   const numTooltips = tooltips.length;
   const tooltipText = tooltips | map (concatTo ('🡐 '))
@@ -226,9 +230,11 @@ const Desc = ({ contents = [], onScroll, showTooltip = false, onClickItem, }) =>
 
           const text = textArg | convertLinks
 
+          if (component == Item) ++tooltipIdx
+
           return <div key={idx} style={{position: 'relative'}}>
             { React.createElement(component, props, text) }
-            { (component === Item && ++tooltipIdx < numTooltips) | whenTrue (
+            { (component === Item && tooltipIdx >= 0 && tooltipIdx < numTooltips) | whenTrue (
               _ => <TooltipS idx={showTooltip ? (numTooltips - tooltipIdx) : -1}>
                 {tooltipText [tooltipIdx]}
               </TooltipS>
@@ -320,7 +326,8 @@ const formatDesc = split ('\n') >> map ((line) =>
       xMatch (/ ^ h4\. \s+ (.+) /) | guard ((x, m) => [H4, m[1]]),
       xMatch (/ ^ # /) | guard ((x) => ([Comment, x])),
       xMatch (/ ^ $ /) | guard (appendTo ([P])),
-      otherwise | guard (appendTo ([Item]))
+//       xMatch (/ ^ item\. \s+ (.+) /) | guard ((x, m) => [Item1, m[1]]),
+      otherwise | guard (appendTo ([Item])),
     ])
 )
 
@@ -430,6 +437,9 @@ function getDesc () {
     h4. You could integrate it with your editor so that types can be inserted or looked up on Hoogle for example. Below is an example of how it works with vim.
 
     h4. You can probably best get a feel for the grammar by typing out some of the examples in the REPL above.
+
+    h4. Try typing this:
+    add;i i i=a-
 
     h2. Examples
 

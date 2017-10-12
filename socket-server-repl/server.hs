@@ -67,10 +67,10 @@ main = do
 
     h <- yellow host
     p <- (cyan . show) port
-    putStrLn $ printf "Listening on host %s port %s" h p
+    info $ printf "Listening on host %s port %s" h p
 
     WS.runServer host port $ application state
-    putStrLn "Exiting."
+    info "Exiting."
 
 processArgs :: ([String]) -> IO (String, Int)
 processArgs = p' where
@@ -92,7 +92,7 @@ application state pending = do
     let modify' = modify'' . addClient conn
     (client', id') <- modifyMVar state modify'
 
-    putStrLn . printf "Connecting client with id %s" =<< (green . show) id'
+    info . printf "Connecting client %s" =<< (green . show) id'
 
     flip finally (disconnect client' id') $ do
         talk client'
@@ -101,7 +101,7 @@ application state pending = do
     -- | removes it from the clients array, though at the moment that
     -- doesn't change anything (talk loop is already bootstrapped).
     disconnect client'' id'' = do
-        putStrLn . printf "Disconnecting client with id %s" =<< (red . show) id''
+        info . printf "Disconnecting client %s" =<< (red . show) id''
         modifyMVar_ state $ return . removeClient client''
         return state
 
@@ -145,20 +145,20 @@ err :: String -> IO ()
 err str = do
     -- annotation applies to right of arrow.
     b <- return . printf "%s" =<< red bullet :: IO String
-    putStrLn $ printf "%s Error: %s" b str
+    info $ printf "%s Error: %s" b str
     exitFailure
 
 info :: String -> IO ()
 info str = do
     b <- return . printf "%s" =<< blue bullet :: IO String
     putStrLn $ printf "%s %s" b str
-    exitFailure
+    return ()
 
 usage :: String
 usage = "Usage: %s port [host]"
 
 bullet :: String
-bullet = "𝄢"
+bullet = "٭"
 
 defaultHost :: String
 defaultHost = "127.0.0.1"
