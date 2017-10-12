@@ -80,7 +80,9 @@ const Item = ({ children, onClick, }) => <div
   onClick={_ => onClick (children)}
 >
  <ItemS>
-  {children}
+  <ItemInnerS>
+    {children}
+  </ItemInnerS>
  </ItemS>
 </div>
 
@@ -99,10 +101,15 @@ const ItemS = styled.div`
   padding: 10px;
   background: black;
   color: darkkhaki;
+`
+
+const ItemInnerS = styled.div`
+  display: inline-block;
+  border-bottom: 1px solid black;
   &:hover {
-    text-decoration: underline;
     cursor: pointer;
-    color: maroon;
+    // darksalmon
+    border-bottom: 1px solid crimson;
   }
 `
 
@@ -203,6 +210,7 @@ const ReplS = styled.div`
 
 const ReplWrapper = styled.div`
   height: 31%;
+  min-height: 270px;
 `
 
 const convertLinks = xReplace (/ \[\[ (.+?) \| (.+?) \]\] /g)
