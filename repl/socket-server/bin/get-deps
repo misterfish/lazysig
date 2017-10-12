@@ -1,6 +1,6 @@
 #!/bin/bash
 
-bindir=$(dirname "$0")
+bindir=$(realpath "$(dirname "")")
 
 . "$bindir"/functions.bash
 

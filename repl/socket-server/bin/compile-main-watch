@@ -2,7 +2,7 @@
 
 set -e
 
-bindir=$(dirname "$0")
+bindir=$(realpath "$(dirname "$0")")
 
 . "$bindir"/functions.bash
 

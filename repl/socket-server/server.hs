@@ -21,7 +21,7 @@ import Text.Printf
     ( printf
     )
 
-import Hsig
+import Lazysig
     ( parseInput
     , generate
     )

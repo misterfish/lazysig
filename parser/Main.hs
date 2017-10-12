@@ -1,6 +1,6 @@
 module Main where
 
-import Hsig
+import Lazysig
     ( parseInput
     , Generate(generate)
     )

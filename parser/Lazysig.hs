@@ -1,4 +1,4 @@
-module Hsig
+module Lazysig
     ( parseInput
     , Generate(generate)
     ) where

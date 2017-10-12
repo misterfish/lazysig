@@ -1,13 +1,17 @@
 #!/bin/bash
 
-bindir=$(dirname "$0")
+set -e
+
+bindir=$(realpath "$(dirname "$0")")
+
+parserdir="$bindir"/../../../parser
 
 . "$bindir"/functions.bash
 
 USAGE="Usage: $0"
 
 main_hs=("server.hs" "client.hs")
-opts='-i../parser/'
+opts="-i$parserdir"
 
 chd "$bindir"/..
 
