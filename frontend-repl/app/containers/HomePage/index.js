@@ -51,7 +51,6 @@ const Article = styled.article`
 `
 
 const BlahDiv = styled.div`
-  height: 100%;
 `
 
 const All = ({ ready, children }) => <AllS
@@ -172,7 +171,7 @@ const Comment = styled.div`
 
 const DescS = styled.div`
   margin-top: 20px;
-  height: 100%;
+  height: 60%;
   overflow-y: scroll;
   padding: 10px;
   border-top: 2px solid black;
@@ -203,6 +202,7 @@ const ReplS = styled.div`
 `
 
 const ReplWrapper = styled.div`
+  height: 31%;
 `
 
 const convertLinks = xReplace (/ \[\[ (.+?) \| (.+?) \]\] /g)

@@ -2,13 +2,14 @@ import { injectGlobal } from 'styled-components';
 
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
-  html,
-  body {
-    height: 100%;
+  html {
+    height: 100vh;
     width: 100%;
   }
 
   body {
+    height: 100%;
+    width: 100%;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
