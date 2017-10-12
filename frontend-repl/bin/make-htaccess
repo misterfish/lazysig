@@ -1,0 +1,18 @@
+#!/bin/bash
+
+bindir=$(dirname "$0")
+
+. "$bindir"/functions.bash
+
+builddir="$bindir"/../build
+
+USAGE="Usage: $0"
+
+cmd redirect-out "$builddir"/.htaccess cat <<< "
+<IfModule rewrite_module>
+RewriteEngine On
+RewriteCond %{HTTP:Connection} Upgrade [NC]
+RewriteCond %{HTTP:Upgrade} websocket [NC]
+RewriteRule ^ws$ ws://127.0.0.1:9191 [P,L]
+</IfModule>
+"
