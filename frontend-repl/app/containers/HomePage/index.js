@@ -97,7 +97,6 @@ const TooltipS = styled.div`
 
 const ItemS = styled.div`
   font-family: 'Roboto Mono', monospace;
-//   padding-left: 20px;
   padding: 10px;
   background: black;
   color: darkkhaki;
@@ -234,11 +233,11 @@ const Desc = ({ contents = [], onScroll, showTooltip = false, onClickItem, }) =>
 
           return <div key={idx} style={{position: 'relative'}}>
             { React.createElement(component, props, text) }
-            { (component === Item && tooltipIdx >= 0 && tooltipIdx < numTooltips) | whenTrue (
+            { /*(component === Item && tooltipIdx >= 0 && tooltipIdx < numTooltips) | whenTrue (
               _ => <TooltipS idx={showTooltip ? (numTooltips - tooltipIdx) : -1}>
                 {tooltipText [tooltipIdx]}
               </TooltipS>
-            )}
+            )*/}
           </div>
         })
       }
@@ -251,6 +250,9 @@ const InputS = styled.input`
   opacity: ${prop ('isDefaultVal') >> ifTrue (0.5 | blush) (1 | blush)};
   padding: 30px;
   width: 100%;
+
+//   background: black;
+//   color: darkkhaki;
 `
 
 class Input extends React.Component {
