@@ -164,7 +164,7 @@ defaultHost :: String
 defaultHost = "127.0.0.1"
 
 defaultPort :: Int
-defaultPort = 9160 :: Int
+defaultPort = 9191 :: Int
 
 (+++) :: Text -> Text -> Text
 (+++) = T.append

@@ -57,10 +57,16 @@ const BlahDiv = styled.div`
 const All = ({ ready, children }) => <AllS
   ready={ready}
   >
-  <div style={{ display: ready ? '' : 'none' }}>
+  <div style={{
+    height: '100%',
+    display: ready ? '' : 'none',
+  }}>
     {children}
   </div>
-  <div style={{ display: ready ? 'none' : '' }}>
+  <div style={{
+    height: '100%',
+    display: ready ? 'none' : '',
+  }}>
     {spinner ()}
   </div>
 </AllS>
@@ -134,6 +140,7 @@ const H2S = styled.div`
   font-size: 1.5em;
   margin-bottom: 5px;
   display: flex;
+  text-decoration: underline;
   justify-content: center;
 `
 
@@ -200,10 +207,11 @@ const convertLinks = xReplace (/ \[\[ (.+?) \| (.+?) \]\] /g)
 
 const Desc = ({ contents = [], onScroll, showTooltip = false, onClickItem, }) => {
   let tooltipIdx = -1
-  const numTooltips = 5
-  const tooltipText = [
-    'type this', 'or this', 'or this', 'or this', 'etc.',
-  ] | map (concatTo ('🡐 '))
+  const tooltips = [
+    'type this', 'or this', 'or this', 'etc.',
+  ]
+  const numTooltips = tooltips.length;
+  const tooltipText = tooltips | map (concatTo ('🡐 '))
 
   return <DescS
     onScroll={onScroll}
@@ -421,7 +429,7 @@ function getDesc () {
 
     h4. You could integrate it with your editor so that types can be inserted or looked up on Hoogle for example. Below is an example of how it works with vim.
 
-    h4. The grammar is best understood by typing out the examples below in the REPL above.
+    h4. You can probably best get a feel for the grammar by typing out some of the examples in the REPL above.
 
     h2. Examples
 
@@ -440,12 +448,12 @@ function getDesc () {
     # --- i = Int, j = Integer, b = Bool, f = Float, c = Char,
     # --- d = Double, s = String, l for a list, p for a tuple.
 
-    # --- pairs can nest arbitrarily but only as the last element of a pair.
+    # --- tuples can nest arbitrarily but only as the last element of a tuple.
 
     piipijplsipii
     piipiipiiiijjpij
 
-    # --- param types, arbitrary.
+    # --- param types, user-defined.
 
     .a .b .z .O
     i .a pi.b
