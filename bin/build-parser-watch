@@ -2,15 +2,14 @@
 
 set -e
 
-bindir=$(dirname "$0")
+bindir=$(realpath "$(dirname "$0")")
+parsedir="$bindir"/../parser
 
 . "$bindir"/functions.bash
 
 USAGE="Usage: $0"
 
-makecmd="$bindir"/build
-
-chd "$bindir"/..
+makecmd="$bindir"/build-parser
 
 makeit() {
     cmd "$makecmd"
@@ -49,6 +48,8 @@ _beep() {
     info "ok"
     beep || true
 }
+
+chd "$parsedir"
 
 loop() {
     check_dirty ret1

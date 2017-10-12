@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+bindir=$(realpath "$(dirname "$0")")
+
+parsedir="$bindir"/../parser
+testsdir="$parsedir"/__tests__
+nodemodulesdir="$parsedir"/node_modules
+
+. "$bindir"/functions.bash
+
+chd "$testsdir"
+cmd "$nodemodulesdir"/.bin/lsc -bck --no-header *.ls "$@"
+
+
+
+

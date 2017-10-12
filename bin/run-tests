@@ -1,10 +1,12 @@
 #!/bin/bash
 
-bindir=$(realpath --relative-to . "$(dirname "$0")")
+set -e
+
+bindir=$(realpath "$(dirname "$0")")
+parsedir="$bindir"/../parser
+nodemodulesdir="$parsedir"/node_modules
 
 . "$bindir"/functions.bash
-
-maindir="$bindir"/..
 
 USAGE="Usage: $0 [-w / --watch]"
 
@@ -18,10 +20,7 @@ while getopts hw-: arg; do
             case $OPTARG in
                 help)  warn "$USAGE"; exit 0 ;;
                 watch)  watch=yes;;
-                #letter-b=?*)    ARG_B="$LONG_OPTARG" ;;
-                #letter-b*)        error "Option '--$OPTARG' requires an argument" ;;
-                #letter-a* | letter-c* ) error "Option '--$OPTARG' doesn't allow an argument" ;;
-                '')    break ;; # "--" terminates argument processing
+                '')    break ;;
                 *)     error "Illegal option --$OPTARG" ;;
                 esac
         ;;
@@ -38,4 +37,5 @@ if [ "$watch" ]; then push argslist --watch; fi
 
 args=$(join argslist)
 
-cmd "$maindir"/node_modules/.bin/jest $args
+chd "$parsedir"
+cmd "$nodemodulesdir"/.bin/jest $args

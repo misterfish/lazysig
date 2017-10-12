@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+bindir=$(realpath --relative-to . "$(dirname "$0")")
+parsedir="$bindir"/../parser
+
+. "$bindir"/functions.bash
+
+USAGE="Usage: $0"
+
+chd "$parsedir"
+cmd ghc Main.hs

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-bindir=$(dirname "$0")
-
-. "$bindir"/functions.bash
-
-chd "$bindir"/../__tests__
-cmd ../node_modules/.bin/lsc -bck --no-header *.ls "$@"
