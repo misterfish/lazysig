@@ -1,8 +1,8 @@
 socket-server/client
 socket-server/server
 
-.swo
-.swp
+*.swo
+*.swp
 
 .fish-tree-files
 

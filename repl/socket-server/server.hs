@@ -36,7 +36,10 @@ import Fish
     , red
     )
 
+type Color = String -> IO String
+
 type ClientId = Int
+
 data Client = Client { getId :: ClientId
                      , getConn :: WS.Connection
                      }
@@ -115,7 +118,8 @@ talk client = forever $ do
         recv' :: WS.Connection -> IO Text
         recv' = WS.receiveData
 
--- uncaught fail/error kills the client connection, but not the server (BTW)
+-- uncaught fail/error kills the client connection, but doesn't bring down
+-- the server (BTW)
 
 processMsg :: Text -> IO Text
 processMsg msg = do
@@ -143,22 +147,24 @@ usageMsg = do
 
 err :: String -> IO ()
 err str = do
-    -- annotation applies to right of arrow.
-    b <- return . printf "%s" =<< red bullet :: IO String
+    b <- bullet red
     info $ printf "%s Error: %s" b str
     exitFailure
 
 info :: String -> IO ()
 info str = do
-    b <- return . printf "%s" =<< blue bullet :: IO String
+    b <- bullet blue
     putStrLn $ printf "%s %s" b str
     return ()
 
 usage :: String
 usage = "Usage: %s port [host]"
 
-bullet :: String
-bullet = "٭"
+bullet' :: String
+bullet' = "٭"
+
+bullet :: Color -> IO String
+bullet col = return . printf "%s" =<< col bullet'
 
 defaultHost :: String
 defaultHost = "127.0.0.1"
