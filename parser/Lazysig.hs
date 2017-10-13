@@ -61,7 +61,7 @@ import Data
     , Terms(Terms)
     , Term(Term, TermLiteral)
     , Type(TypeInt, TypeInteger, TypeChar, TypeString, TypeFloat
-          , TypeDouble, TypeBool, TypeList, TypePair, TypeAnon
+          , TypeDouble, TypeBool, TypeList, TypeTuple, TypeUser
           , TypeCompound, TypeFunction
           )
     , Generate(generate)
@@ -233,7 +233,7 @@ term = try t' <|> try tl' where
     tl'' = char '/' *> many1 termLiteralCh <* char '/'
 
 type' :: GenParser Char st Type
-type' =  try typePair <|> try typeSimple <|> try typeList
+type' =  try typeTuple <|> try typeSimple <|> try typeList
      <|> try typeCompound <|> try typeFunction
 
 typeCompoundSingleCharCh :: GenParser Char st Char
@@ -264,7 +264,7 @@ typeSimple =  (char 'c' >> return TypeChar)
           <|> (char 'j' >> return TypeInteger)
           <|> (char 'd' >> return TypeDouble)
           <|> (char 's' >> return TypeString)
-          <|> TypeAnon <$> (:[]) <$> param' where
+          <|> TypeUser <$> (:[]) <$> param' where
               param' = try $ do
                   _ <- char '.'
                   anyChar
@@ -272,12 +272,13 @@ typeSimple =  (char 'c' >> return TypeChar)
 typeList :: GenParser Char st Type
 typeList = char 'l' >> liftM TypeList type'
 
-typePair :: GenParser Char st Type
-typePair = try t' where
+typeTuple :: GenParser Char st Type
+typeTuple = try t' where
     t' = do
         _ <- char 'p'
         ts <- (:) <$> type' <*> many1 type'
-        return . TypePair $ ts
+        _ <- optional $ char 'P'
+        return . TypeTuple $ ts
 
 typeFunction :: GenParser Char st Type
 typeFunction = char '(' *> terms' <* char ')' where

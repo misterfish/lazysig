@@ -16,8 +16,8 @@ module Data
     , Term(Term, TermLiteral)
     , Type( TypeInt, TypeInteger, TypeChar, TypeString, TypeFloat, TypeBool
           , TypeDouble, TypeList
-          , TypePair
-          , TypeAnon
+          , TypeTuple
+          , TypeUser
           , TypeCompound, TypeFunction
           )
     , Generate(generate)
@@ -93,9 +93,9 @@ data Type = TypeInt
           | TypeFloat
           | TypeDouble
           | TypeList Type
-          | TypePair [Type]
+          | TypeTuple [Type]
           | TypeCompound String [Type]
-          | TypeAnon String
+          | TypeUser String
           | TypeFunction Terms
 
 class Generate a where
@@ -197,11 +197,15 @@ instance Generate Type where
     generate (TypeList t) = do
         gt' <- generate t
         return $ "[" ++ gt' ++ "]"
-    generate (TypePair ts) = t' ts where
+    generate (TypeTuple ts) = t' ts where
         t' = return . printf "(%s)" . intercalate ", " <=< sequence . map generate
     generate (TypeCompound t ts) = t' ts where
-        t' = return . intercalate " " <=< sequence . (:) (return t) . map generate
-    generate (TypeAnon s) = return s
+        t' = return . intercalate " " <=< sequence . (:) (return . t'' $ t) . map generate
+        t'' "I" = "IO"
+        t'' "M" = "Maybe"
+        t'' "E" = "Either"
+        t'' x = x
+    generate (TypeUser s) = return s
     generate (TypeFunction ts) = do
         gts' <- generate ts
         return $ "(" ++ gts' ++ ")"
@@ -230,13 +234,14 @@ generateBody numTerms (Body name args) = do
         bodyArgs = showBodyArgs numTerms args
 
 showBodyArgs :: Int -> BodyArgs -> Either String String
+showBodyArgs 0 BodyEmpty = Right ""
 showBodyArgs _ (BodyArgs as) = Right $ intercalate " " as
 showBodyArgs numParams (BodyArgsRangeLR l r)
   | ord r - ord l > numParams - 1 = Left "too many args in body"
   | otherwise = maybe (Left "bad char range") (Right . intercal'') $ charRange l r
 showBodyArgs numParams (BodyArgsNumRangeLR c nl nr)
   | nr - nl > numParams - 1 = Left "too many args in body"
-  | otherwise = maybe (Left "bad char range") (Right . intercal') $ numCharRange c nl nr where
+  | otherwise = maybe (Left "bad char range") (Right . intercal') $ numCharRange c nl nr
 showBodyArgs 0 _ = Left "unable to calculate range" -- open-ended range
 showBodyArgs numParams (BodyArgsRangeL l)
   | ord 'z' - ord l < numParams - 1 = Left . printf "range char too high (%c)" $ l

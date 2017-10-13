@@ -9,7 +9,7 @@ cp = require 'child_process'
 } = require './common'
 
 config =
-    run-cmd: __dirname + '/../hsig'
+    run-cmd: __dirname + '/../lazysig'
 
 # --- arbitrary unique object.
 token = -> {}

@@ -3,7 +3,7 @@ cp = require('child_process');
 ref$ = fishLib = require('fish-lib'), brightRed = ref$.brightRed, warn = ref$.warn, ierror = ref$.ierror;
 expectToEqual = require('./common').expectToEqual;
 config = {
-  runCmd: __dirname + '/../hsig'
+  runCmd: __dirname + '/../lazysig'
 };
 token = function(){
   return {};

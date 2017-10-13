@@ -4,12 +4,9 @@
 
 {
     assoc, assocPath, head, tail, reduceRight, chain, identity, reduce, map, filter, join, split, prop: rProp, path: rPath, defaultTo: rDefaultTo, curry, forEach: each, complement, isNil,
-    repeat: rRepeat,
+    repeat: r-repeat,
     times: r-times,
-    reverse,
-    tap,
-    flip,
-    zip,
+    reverse, tap, flip, zip,
 } = require 'ramda'
 
 {

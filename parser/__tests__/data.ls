@@ -68,6 +68,15 @@ tests =
         ['tmi.aj.b' 'm Int a Integer b']
         ['tmi.aj.bT' 'm Int a Integer b']
         ['tf.t' 'f t']
+        ['tmpssPpss' 'm (String, String) (String, String)']
+
+        ['tI.a' 'IO a']
+        ['tM.a' 'Maybe a']
+        ['tE.a' 'Either a']
+        ['tIs' 'IO String']
+        ['tMpbb' 'Maybe (Bool, Bool)']
+        ['tEsls' 'Either String [String]']
+        ['tEslls' 'Either String [[String]]']
 
         ['li' '[Int]']
         ['lj' '[Integer]']
@@ -162,6 +171,8 @@ tests =
         ['add;i i i i=2c' 'add :: Int -> Int -> Int -> Int\nadd _ _ c = ']
         ['add;i i i i=2C' bad-parse]
         ['add;i i i i=3x' bad-generate]
+
+        ['constant;s=' 'constant :: String\nconstant = ']
 
         ['add;i i i i=y-' bad-generate]
         ['add;i i i i=d-' 'add :: Int -> Int -> Int -> Int\nadd d e f = ']
