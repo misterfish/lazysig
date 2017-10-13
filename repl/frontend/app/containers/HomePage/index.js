@@ -214,6 +214,32 @@ const ReplWrapper = styled.div`
   min-height: 270px;
 `
 
+const SourceS = styled.div`
+  text-align: center;
+  a {
+    font-size: 14px;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: maroon;
+    text-decoration: none;
+    &:hover {
+      border-bottom: 1px solid maroon;
+    }
+  }
+`
+
+const SourceA = ({ a, b, c }) => <a
+  href={ "https://github.com/misterfish/" + a }
+>
+  misterfish / {a}
+</a>
+
+const Source = () => <SourceS>
+  <H2>Source</H2>
+  <SourceA a="lazysig"/>
+  <SourceA a="lazysig.vim"/>
+</SourceS>
+
 const convertLinks = xReplace (/ \[\[ (.+?) \| (.+?) \]\] /g)
 ((_, text, href) => [text, href] | sprintfN ('<a href=\'%s\'>%s</a>'))
 
@@ -231,6 +257,8 @@ const Desc = ({
   return <DescS
     onScroll={onScroll}
   >
+    <Source/>
+
     <Demo
       expanded={demoExpanded}
       onClick={onClickDemo}
@@ -478,7 +506,7 @@ function getDesc () {
 
     h2. What is this?
 
-    h4. lazysig is a mini-language for quickly generating Haskell-style type signatures.
+    h4. lazysig is a mini-language for quickly generating Haskell-style type signatures and/or function declarations.
 
     h4. You can probably best get a feel for the grammar by typing out some of the examples in the REPL above.
 
