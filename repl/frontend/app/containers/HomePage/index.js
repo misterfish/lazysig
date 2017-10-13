@@ -667,7 +667,6 @@ function getDesc () {
     add;i i i i=0l
     add;i i i i=1m
     add;i i i i=2n
-    add;i i i i=3o
 
     h3. Full expression.
 
