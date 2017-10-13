@@ -36,6 +36,7 @@ import styled from 'styled-components';
 
 const config = {
   socketWait: 500,
+  demoSrc: require('../../movies/demo.webm'),
 }
 
 const spinner = () => <LoadingIndicator/>
@@ -216,7 +217,10 @@ const ReplWrapper = styled.div`
 const convertLinks = xReplace (/ \[\[ (.+?) \| (.+?) \]\] /g)
 ((_, text, href) => [text, href] | sprintfN ('<a href=\'%s\'>%s</a>'))
 
-const Desc = ({ contents = [], onScroll, showTooltip = false, onClickItem, }) => {
+const Desc = ({
+  contents = [], onScroll, showTooltip = false,
+  onClickItem, onClickDemo, demoExpanded,
+}) => {
   let tooltipIdx = -2 // --- skip first item.
   const tooltips = [
     'or this', 'or this', 'or this', 'etc.',
@@ -227,6 +231,11 @@ const Desc = ({ contents = [], onScroll, showTooltip = false, onClickItem, }) =>
   return <DescS
     onScroll={onScroll}
   >
+    <Demo
+      expanded={demoExpanded}
+      onClick={onClickDemo}
+    />
+
     <DescInnerS>
       {
         contents | mapX (([component, textArg], idx) => {
@@ -258,10 +267,30 @@ const InputS = styled.input`
   opacity: ${prop ('isDefaultVal') >> ifTrue (0.5 | blush) (1 | blush)};
   padding: 30px;
   width: 100%;
-
-//   background: black;
-//   color: darkkhaki;
 `
+
+const DemoS = styled.div`
+  height: ${prop ('expanded') >> ifTrue ('580px' | blush) ('200px' | blush)};
+  width: ${prop ('expanded') >> ifTrue ('580px' | blush) ('200px' | blush)};
+  transition: height 600ms, width 600ms;
+  margin: auto;
+`
+
+const DemoInnerS = styled.video`
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+`
+
+const Demo = ({ expanded, onClick, }) =>
+  <DemoS expanded={expanded}>
+    <DemoInnerS
+      onClick={onClick}
+      src={config.demoSrc}
+      autoPlay="1"
+      loop="1"
+    ></DemoInnerS>
+  </DemoS>
 
 class Input extends React.Component {
   constructor (props) {
@@ -367,6 +396,7 @@ export class HomePage extends React.PureComponent {
       isDefaultVal: true,
       showTooltip: false,
       linkText: undefined,
+      demoExpanded: false,
     }
     this.desc = getDesc () | formatDesc
 
@@ -377,7 +407,6 @@ export class HomePage extends React.PureComponent {
       this.setState ({ parsed, })
     }
     const onClose = () => {
-      console.log ('closed!')
       this.setState ({ socketReady: false, })
       setTimeout (() => socketClient.initConnection (), config.socketWait)
     }
@@ -403,11 +432,16 @@ export class HomePage extends React.PureComponent {
               />
               <Parsed contents={this.state.parsed}/>
             </ReplWrapper>
+
             <Desc
               contents={this.desc}
               onClickItem={text => {
                 this.setState ({ linkText: text, })
               }}
+              onClickDemo={() => this.setState ({
+                demoExpanded: !this.state.demoExpanded,
+              })}
+              demoExpanded={this.state.demoExpanded}
               onScroll={
                 path (['target', 'scrollTop']) >>
                 ifPredicate (200 | gt) (T) (F) >>
@@ -437,14 +471,14 @@ export function mapDispatchToProps(dispatch) {
   };
 }
 
+//     h4. You could integrate it with your editor so that types can be inserted or looked up on Hoogle for example. Below is an example of how it works with vim.
+
 function getDesc () {
     return `
 
     h2. What is this?
 
     h4. lazysig is a mini-language for quickly generating Haskell-style type signatures.
-
-    h4. You could integrate it with your editor so that types can be inserted or looked up on Hoogle for example. Below is an example of how it works with vim.
 
     h4. You can probably best get a feel for the grammar by typing out some of the examples in the REPL above.
 
@@ -468,7 +502,11 @@ function getDesc () {
     # --- i = Int, j = Integer, b = Bool, f = Float, c = Char,
     # --- d = Double, s = String, l for a list, p for a tuple.
 
-    # --- tuples can nest arbitrarily but only as the last element of a tuple.
+    # --- tuples can have an optional P at the end (useful later)
+
+    piiP
+
+    # --- they can nest arbitrarily but only as the last element each time.
 
     piipijplsipii
     piipiipiiiijjpij
@@ -491,6 +529,11 @@ function getDesc () {
     tf.a.b
     tnpii
 
+    # --- compound types, known aliases (I = IO, M = Maybe, E = Either).
+    color;s tIs
+    test;s tEspss
+    charToInt;c tMi
+
     # --- closing T optional.
 
     tm.aT
@@ -503,11 +546,8 @@ function getDesc () {
 
     /Duck Int/
 
-    # --- compound types, long name.
+    # --- compound types, arbitrary name.
 
-    t/Either/ij
-    t/Either/ij j
-    t/Maybe/i
     t/Duck/ij
 
     # --- more.
@@ -633,7 +673,7 @@ function getDesc () {
     delete;ea;.a l.a l.a
     foldl;lt;(.b .a .b) .b tt.a .b
     tail;l.a l.a
-    unfoldr;(.b t/Maybe/p.a.b) .b l.a
+    unfoldr;(.b tMp.a.b) .b l.a
     zip;l.a l.b lp.a.b
     intercalate;l.a ll.a l.a
     liftM2;mm;(/a1/ /a2/ .r) /m a1/ /m a2/ /m r/
