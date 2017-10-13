@@ -317,6 +317,7 @@ const Demo = ({ expanded, onClick, }) =>
       src={config.demoSrc}
       autoPlay="1"
       loop="1"
+      controls="1"
     ></DemoInnerS>
   </DemoS>
 
