@@ -234,7 +234,7 @@ generateBody numTerms (Body name args) = do
         bodyArgs = showBodyArgs numTerms args
 
 showBodyArgs :: Int -> BodyArgs -> Either String String
-showBodyArgs 0 BodyEmpty = Right ""
+showBodyArgs _ BodyEmpty = Right $ ""
 showBodyArgs _ (BodyArgs as) = Right $ intercalate " " as
 showBodyArgs numParams (BodyArgsRangeLR l r)
   | ord r - ord l > numParams - 1 = Left "too many args in body"
@@ -263,7 +263,6 @@ showBodyArgs numParams (BodyArgsOnly n str)
       | m == n = Just (str, m + 1)
       | otherwise = Just ("_", m + 1)
 showBodyArgs numParams (BodyArgsUnderscoreRange) = Right $ intercalate " " . take numParams $ repeat "_"
-showBodyArgs _ (BodyEmpty) = Right $ ""
 
 intercal'' :: [Char] -> String
 intercal'' = intercalate " " . map (:[])
