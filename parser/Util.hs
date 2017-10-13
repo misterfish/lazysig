@@ -138,3 +138,8 @@ varId1Ch = oneOf $ "_" ++ alphaCh'l
 varIdCh :: GenParser Char st Char
 varIdCh = oneOf $ "_'" ++ alphaCh'l ++ alphaCh'u ++ numCh'
 
+ascSymbol :: GenParser Char st Char
+ascSymbol = oneOf "!#$%&*+./<=>?@\\ˆ|-˜:"
+
+uniSymbol :: GenParser Char st Char
+uniSymbol = undefined

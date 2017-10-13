@@ -11,6 +11,23 @@ tests =
     parse-tests-name: list do
         ['add' 'add']
         ["sortList'" "sortList'"]
+        ['_add' '_add']
+        ['aDD' 'aDD']
+        ['add3' 'add3']
+        ["_'" "_'"]
+        ['(+)' '(+)']
+
+        ['3add' bad-parse]
+        ['Add' bad-parse]
+        ['(=)' bad-parse]
+        ['(;)' bad-parse]
+        ['!!!!' bad-parse]
+        ['$a' bad-parse]
+        ['#a' bad-parse]
+        ['a$' bad-parse]
+        ['(a)' bad-parse]
+        ['+)' bad-parse]
+        ['(+' bad-parse]
 
     parse-tests-constraints: list do
         ['ma RFb' '(Monad a, RealFrac b)']

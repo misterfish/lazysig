@@ -34,6 +34,7 @@ import Text.ParserCombinators.Parsec
     , optional
     , many
     , many1
+    , notFollowedBy
     , oneOf
     , sepBy
     , sepBy1
@@ -93,7 +94,7 @@ start = try s1 <|> try s2 <|> try s3 where
 body :: GenParser Char st Body
 body = try b1 <|> try b2 where
     b1 = do
-        n <- many1 nameCh
+        n <- functionName
         _ <- char ';'
         a <- bodyArgs
         return $ b' n a
@@ -153,9 +154,19 @@ bodyArgs = try bunderscores <|> try bnumonly <|> try bnumrange <|>
 nameCh :: GenParser Char st Char
 nameCh = noneOf ";= "
 
--- | empty name ok -> allows ;x;y
+functionName :: GenParser Char st String
+functionName =  try op
+            <|> try normal where
+                op = do
+                    _ <- char '('
+                    
+                    _ <- char ')'
+
+-- | empty name ok.
 name :: GenParser Char st Name
-name = Name <$> many nameCh
+name = Name <$> n' where
+    n' =  functionName
+      <|> string ""
 
 sigSep :: GenParser Char st Char
 sigSep = char ';'
